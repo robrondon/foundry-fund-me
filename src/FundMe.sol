@@ -4,7 +4,15 @@ pragma solidity ^0.8.24;
 import {PriceConverter} from "./PriceConverter";
 
 contract FundMe {
+    using PriceConverter for uint256;
+
+    uint256 public constant MINIMUM_USD = 5e18;
+
     address public immutable i_owner;
+
+    address[] public funders;
+    mapping(address funder => uint256 amountFunded)
+        public addressToAmountFunded;
 
     constructor() {
         i_owner = msg.sender;
