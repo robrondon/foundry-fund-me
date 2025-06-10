@@ -17,4 +17,21 @@ contract FundMe {
     constructor() {
         i_owner = msg.sender;
     }
+
+    function fund() public payable {
+        require(
+            msg.value.getConversionRate() >= MINIMUM_USD,
+            "Didn't send enough ETH"
+        );
+        funders.push(msg.sender);
+        addressToAmountFunded[msg.sender] += msg.value;
+    }
+
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
 }
