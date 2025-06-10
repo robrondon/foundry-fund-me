@@ -11,6 +11,18 @@ contract FundMeTest is Test {
         fundMe = new FundMe();
     }
 
+    /**
+     * Different types of tests:
+     *  1. Unit
+     *      - Testing specific part of our code
+     *  2. Integration
+     *      - Testing how our code works with other parts of our code
+     *  3. Forked
+     *      - Testing our code on a simulated real environment
+     *  4. Staging
+     *      - Testing in a real environment that is not prod
+     */
+
     function testMinimumDollarIsFive() public view {
         console.log(fundMe.MINIMUM_USD());
         assertEq(fundMe.MINIMUM_USD(), 5e18);
@@ -18,5 +30,10 @@ contract FundMeTest is Test {
 
     function testOwnerIsMsgSender() public view {
         assertEq(fundMe.i_owner(), address(this));
+    }
+
+    function testPriceFeedVersionIsAccurate() public view {
+        uint256 version = fundMe.getVersion();
+        assertEq(version, 4);
     }
 }
