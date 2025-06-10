@@ -10,20 +10,21 @@ contract FundMe {
     using PriceConverter for uint256;
 
     uint256 public constant MINIMUM_USD = 5e18;
-
     address public immutable i_owner;
+    AggregatorV3Interface private s_priceFeed;
 
     address[] public funders;
     mapping(address funder => uint256 amountFunded)
         public addressToAmountFunded;
 
-    constructor() {
+    constructor(address _priceFeed) {
         i_owner = msg.sender;
+        s_priceFeed = AggregatorV3Interface(_priceFeed);
     }
 
     function fund() public payable {
         require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
+            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
             "Didn't send enough ETH"
         );
         funders.push(msg.sender);
@@ -31,10 +32,7 @@ contract FundMe {
     }
 
     function getVersion() public view returns (uint256) {
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(
-            0x694AA1769357215DE4FAC081bf1f309aDC325306
-        );
-        return priceFeed.version();
+        return s_priceFeed.version();
     }
 
     function withdraw() public onlyOwner {
