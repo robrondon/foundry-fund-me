@@ -12,4 +12,12 @@ library PriceConverter {
 
         (, int256 answer, , , , ) = priceFeed.latestRoundData();
     }
+
+    function getConversionRate(
+        uint256 _ethAmount
+    ) internal view returns (uint256) {
+        uint256 ethPrice = getPrice();
+        uint256 ethAmountInUsd = (ethPrice * _ethAmount) / 1e18;
+        return ethAmountInUsd;
+    }
 }
